@@ -1,0 +1,6 @@
+
+admin
+password
+12345
+1234
+cisco

@@ -1,0 +1,7 @@
+
+admin
+user
+administrator
+root
+12345
+cisco
