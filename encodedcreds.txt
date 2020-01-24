@@ -1,4 +1,5 @@
-YWRtaW46
-YWRtaW46cGFzc3dvcmQ=
-Y2lzY286Y2lzY28=
-YWRtaW46YWRtaW4=
+YWRtaW46 #admin:
+YWRtaW46cGFzc3dvcmQ= #admin:password
+Y2lzY286Y2lzY28= #cisco:cisco
+YWRtaW46YWRtaW4= #admin:admin
+YWRtaW46MTIzNAo= #admin:1234

