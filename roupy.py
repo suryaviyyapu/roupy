@@ -3,7 +3,7 @@ import sys
 import requests
 import threading
 from routers_info import tplink, digisol, netgear, tenda, dlink
-
+from modules import router_enum_essentials
 
 #Test Creds for Testing
 #CONSTANTS
@@ -25,12 +25,30 @@ def chk_connection(URL_RANGE):
    else:
       return False
 
+def detect_local_ip():
+   os.system('curl ifconfig.me')
+
+
 
 def aslr(URL_RANGE):
    pass
 
 def msr(URL_RANGE):
-   pass
+   #pass
+   res = requests.get(URL_RANGE)
+   responsecode = res.text
+   manufacturer, model = router_enum_essentials.router_model(responsecode)
+   if manufactures not in router_enum_essentials.manufacturers:
+      
+   print("The manufactrer is "+ manufacturer + " Model " + model)
+   if manufacturer == 'tplink':
+      print("Using TPlink module... ")
+      if model == 'Archer C50':
+         result = tplink.Archerc50(URL_RANGE)
+         if result == True:
+            print("Thanks for using Roupy..")
+         else:
+            print("Sorry we missed this router")
 
 def isr(URL_RANGE):
    pass

@@ -18,4 +18,5 @@ python3 roupy.py -u <URL> -t <1|2|3>
 	2. Manual
 	3. Internet 
 
-
+##FOR DEVELOPERS##
+routers_info folder is a python module with different routers names and those files consists of functions that are used to check for default passwords of that particular router
