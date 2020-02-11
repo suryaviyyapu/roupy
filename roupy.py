@@ -19,10 +19,16 @@ URL_RANGE = "http://"
 
 
 def chk_connection(URL_RANGE):
-   res = requests.get(URL_RANGE)
+   try:
+      res = requests.get(URL_RANGE)
+   except requests.exceptions.ConnectionError:
+      print("No Internet. Exiting")
+      exit(0)
    if res.status_code is STATUS:
+      print(res.status_code)
       return True
    else:
+      print(res.status_code)
       return False
 
 def detect_local_ip():
@@ -37,18 +43,20 @@ def msr(URL_RANGE):
    #pass
    res = requests.get(URL_RANGE)
    responsecode = res.text
-   manufacturer, model = router_enum_essentials.router_model(responsecode)
-   if manufactures not in router_enum_essentials.manufacturers:
-      
-   print("The manufactrer is "+ manufacturer + " Model " + model)
-   if manufacturer == 'tplink':
-      print("Using TPlink module... ")
-      if model == 'Archer C50':
-         result = tplink.Archerc50(URL_RANGE)
-         if result == True:
-            print("Thanks for using Roupy..")
-         else:
-            print("Sorry we missed this router")
+   manufacturer, model = router_enum_essentials.router_manufacturer(responsecode)
+   print(manufacturer, model)
+   if manufacturer is 0:
+      print("We don't have this router in our tool.")
+   else:
+      print("The manufactrer is "+ manufacturer + " Model " + model)
+      if manufacturer == 'tplink':
+         print("Using TPlink module... ")
+         if model == 'Archer C50':
+            result = tplink.Archerc50(URL_RANGE)
+            if result == True:
+               print("Thanks for using Roupy..")
+            else:
+               print("Sorry we missed this router")
 
 def isr(URL_RANGE):
    pass
@@ -56,15 +64,15 @@ def isr(URL_RANGE):
 if __name__ == '__main__':
    print("Initializing...")
    if len(sys.argv) == 5:
-      methodToUse = sys.argv[4]
+      methodToUse = int(sys.argv[4])
       URL_RANGE = URL_RANGE + sys.argv[2]
       if chk_connection(URL_RANGE):
          if methodToUse is 1:
             #aslr(URL_RANGE)
             pass
          elif methodToUse is 2:
-            #msr(URL_RANGE)
-            pass
+            msr(URL_RANGE)
+            #pass
          else:
             #isr(URL_RANGE)
             pass

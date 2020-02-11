@@ -86,9 +86,12 @@ manufacturers = [
     'ZTE',
     'ZyXEL',
 ]
-
+response = "TP-Link"
 def router_manufacturer(response):
     for i in manufacturers:
         if i in response:
-            return [1,2]
-            '''[str(i),'Archer C50']'''
+            return i,"Archer C50"
+    else:
+        return 0, 0
+
+print(router_manufacturer(response))
